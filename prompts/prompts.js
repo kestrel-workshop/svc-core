@@ -102,7 +102,7 @@ sumarle algo -- preferí algo como "x^2+y^2=(3+a)^2". Usá como máximo una, y s
 (una familia de curvas cuyo parámetro tiene un significado que el tema enseña), no en cada fórmula ni
 solo para mostrar "distintas pendientes" o "distintas escalas" de la misma curva.`;
 
-// Criterio de REPRESENTACIÓN para "visual" -- el modelo lo aplica ANTES de elegir fórmulas (ver el campo "analisis"
+// Criterio de REPRESENTACIÓN para "visual" -- el modelo lo aplica ANTES de elegir fórmulas (ver el campo "veredicto"
 // de armarToolVisual y validarAnalisisVisual en validarEstructura.js). Surge de un caso real: para
 // "Hydrostatics" el generador devolvió "a*x", "2*x" y "0.5*x" -- tres rectas genéricas que el alumno no puede
 // asociar a la presión ni a la profundidad (el graficador solo muestra ejes x/y sin rótulos ni unidades). La
@@ -128,10 +128,8 @@ cualquiera? Si ve una función cualquiera, el tema NO se grafica bien acá.
   peor que reservar, porque el alumno cree que eso es lo que el tema significa.
 - Si la prueba del alumno se pasa, se grafica sin vacilar; si falla, se reserva.`;
 
-// Versión para el CREADOR del borrador (usa el campo "analisis" de su herramienta).
-const CRITERIO_REPRESENTACION_VISUAL = `PRIMERO DECIDÍ SI ESTE TEMA SE PUEDE MOSTRAR BIEN EN ESTE GRAFICADOR. Antes de elegir ninguna fórmula,
-completá el campo "analisis" de la herramienta. ${CRITERIO_CUERPO_VISUAL}
-En "relacion_candidata" decí qué magnitud es cada eje. Reservar = "veredicto": "reservar" + "necesitaHerramienta".`;
+const CRITERIO_REPRESENTACION_VISUAL = `PRIMERO DECIDÍ SI ESTE TEMA SE PUEDE MOSTRAR BIEN EN ESTE GRAFICADOR. ${CRITERIO_CUERPO_VISUAL}
+Respondé con "veredicto": "grafica_bien" (y entonces mandá "formulas") o "reservar" (y entonces NO mandes nada más). Sin explicaciones.`;
 
 // Cantidad de preguntas por modelo, según tipo. exam.js (frontend) arma
 // 3 modelos free de 12 preguntas cada uno para el examen (antes 10) --
@@ -215,46 +213,25 @@ export function armarToolClaude(tipo) {
 }
 
 /**
- * Tool de "visual". `conAnalisis` = true para la CREACIÓN del borrador: suma el campo "analisis" (razonamiento
- * previo que el modelo tiene que completar ANTES de elegir fórmulas -- con tool_choice forzado no hay "thinking"
- * extendido, así que el razonamiento se obliga por esquema; el servidor lo valida en validarAnalisisVisual).
- * La tool de CORRECCIÓN (armarToolCorreccion) usa conAnalisis = false: ahí ya se decidió y solo se revisan fórmulas.
+ * Tool de "visual". `conVeredicto` = true para la CREACIÓN del borrador: suma el campo "veredicto" (graficar o
+ * reservar el tema para el script JS). La tool de CORRECCIÓN (armarToolCorreccion) usa conVeredicto = false: ahí
+ * ya se decidió y solo se revisan fórmulas.
  */
-function armarToolVisual(conAnalisis) {
-  const analisis = conAnalisis ? {
-    analisis: {
-      type: "object",
-      description: "Razonamiento previo: completalo PRIMERO, antes de \"formulas\" o \"necesitaHerramienta\". No se muestra al alumno; el servidor lo valida.",
-      properties: {
-        concepto_central: {
-          type: "string",
-          description: "Qué enseña este tema, en 1 frase concreta (no el nombre del tema repetido).",
-        },
-        relacion_candidata: {
-          type: "string",
-          description: "La relación matemática concreta que sería el corazón del tema y qué significa cada variable o eje (x, y, z, u, v). Si ninguna enseña el tema, escribí \"ninguna\" y explicá por qué.",
-        },
-        prueba_del_alumno: {
-          type: "string",
-          description: "Qué entendería un alumno que ve SOLO la gráfica, con ejes x/y sin etiquetas, sin unidades y sin tu explicación: ¿ve el concepto del tema o una función cualquiera?",
-        },
-        veredicto: {
-          type: "string",
-          enum: ["grafica_bien", "reservar"],
-          description: "\"grafica_bien\" SOLO si la prueba del alumno se pasa; \"reservar\" si no. Con \"reservar\" hay que completar \"necesitaHerramienta\" y NO mandar \"formulas\"; con \"grafica_bien\" hay que mandar \"formulas\" y NO \"necesitaHerramienta\".",
-        },
-      },
-      required: ["concepto_central", "relacion_candidata", "prueba_del_alumno", "veredicto"],
-    },
-  } : {};
+function armarToolVisual(conVeredicto) {
   return {
     name: "guardar_formulas_visual",
-    description: "Guarda las fórmulas que se grafican por defecto en el graficador interactivo del tema. Completá primero \"analisis\". Si el tema no se enseña bien con ninguna fórmula (ni con ningún comando que ya tenga visual.js), usá \"necesitaHerramienta\" en vez de \"formulas\".",
+    description: "Guarda las fórmulas que se grafican por defecto en el graficador interactivo del tema. Con \"veredicto\": \"reservar\" no se manda ninguna fórmula.",
     input_schema: {
       type: "object",
-      ...(conAnalisis ? { required: ["analisis"] } : {}),
+      ...(conVeredicto ? { required: ["veredicto"] } : {}),
       properties: {
-        ...analisis,
+        ...(conVeredicto ? {
+          veredicto: {
+            type: "string",
+            enum: ["grafica_bien", "reservar"],
+            description: "\"grafica_bien\" SOLO si la prueba del alumno se pasa (hay que mandar \"formulas\"); \"reservar\" si no (NO mandar \"formulas\").",
+          },
+        } : {}),
         formulas: {
           type: "array",
           minItems: 1,
@@ -271,33 +248,7 @@ function armarToolVisual(conAnalisis) {
             required: ["formula"],
           },
         },
-        necesitaHerramienta: {
-          type: "object",
-          description: "Alternativa a \"formulas\" -- usar SOLO cuando ni los 4 formatos de fórmula ni ninguno de los comandos que ya tiene visual.js (ver el catálogo completo en el system prompt) alcanzan para mostrar bien este tema. No mandar junto con \"formulas\": es uno u otro.",
-          properties: {
-            tema: {
-              type: "string",
-              description: "Qué se quería graficar/mostrar para este tema (1-2 frases concretas, no genéricas).",
-            },
-            motivo: {
-              type: "string",
-              description: "Por qué ni los 4 formatos de fórmula ni ninguno de los comandos que ya tiene visual.js (ver catálogo en el system prompt) alcanzan para esto.",
-            },
-            herramienta_sugerida: {
-              type: "string",
-              description: "Qué haría falta para cubrirlo: un comando/función nueva en visual.js, o una herramienta externa aparte (y para qué, ej. precálculo pesado mejor en Rust/C++).",
-            },
-          },
-          required: ["tema", "motivo", "herramienta_sugerida"],
-        },
       },
-      // SIN anyOf/oneOf/allOf en la raíz: la API de Anthropic rechaza el
-      // input_schema con 400 ("input_schema does not support oneOf,
-      // allOf, or anyOf at the top level"), lo que hacía fallar TODOS los
-      // intentos de "visual". La regla "formulas O necesitaHerramienta"
-      // (uno u otro, al menos uno) ya la hace cumplir validarVisual en
-      // lib/validarEstructura.js del lado del servidor, y el description
-      // de cada campo se lo dice al modelo.
     },
   };
 }
@@ -315,7 +266,7 @@ function armarToolVisual(conAnalisis) {
  */
 export function armarToolCorreccion(tipo) {
   if (tipo === "visual") {
-    // Sin "analisis": la decisión de graficar/reservar ya se tomó (borrador + juez); acá solo se revisan las
+    // Sin "veredicto": la decisión de graficar/reservar ya se tomó (borrador + juez); acá solo se revisan las
     // fórmulas. Lleva "revision_matematica" (PRIMERA propiedad, obligatoria): el revisor matemático tiene que
     // re-derivar cada fórmula antes de devolverla -- ver validarRevisionMatematicaVisual.
     const base = armarToolVisual(false);
@@ -361,87 +312,51 @@ export function armarToolCorreccion(tipo) {
 }
 
 /**
- * Tool del JUEZ de "visual". El juez es una CONSULTA CIEGA: no ve nada de lo que propuso el creador (ni fórmulas ni
- * razonamiento ni criterio) -- recibe solo materia + tema y responde "¿se puede crear una herramienta mejor que un
- * graficador de funciones para enseñar esto?". Así no se ancla a la propuesta del creador (los modelos que evalúan
- * tienden a coincidir con lo que leen) y la pregunta cambia el sesgo: en vez de pedirle que "se rinda", se le pide
- * que PROPONGA la mejor herramienta, que es lo que un modelo hace con ganas. El veredicto lo deriva el servidor
- * del nivel de "mejora" (ver veredictoDelJuezVisual): el modelo no elige "aprobar" a la ligera. Los campos van en
- * el orden en que tiene que razonar.
+ * Tool del JUEZ de "visual": consulta CIEGA (solo materia y tema). Responde solo "positivo" (el graficador muestra
+ * bien lo esencial del tema) o "negativo" (no lo muestra bien: el tema queda para el script JS).
  */
 export function armarToolJuezVisual() {
   return {
     name: "dictaminar_visual",
-    description: "Dictamina cuánto mejor podría enseñar este tema una herramienta ideal frente a un graficador de funciones. Completá los campos EN ORDEN.",
+    description: "Dictamina si el graficador de funciones muestra bien lo esencial de este tema.",
     input_schema: {
       type: "object",
-      required: ["leccion_esencial", "mejor_herramienta_posible", "que_alcanza_a_mostrar_un_graficador", "lo_que_se_pierde", "mejora", "razon"],
+      required: ["veredicto"],
       properties: {
-        leccion_esencial: {
+        veredicto: {
           type: "string",
-          description: "Lo esencial que un alumno debería entender de este tema (1-2 frases concretas).",
+          enum: ["positivo", "negativo"],
+          description: "\"positivo\": el graficador muestra bien lo esencial del tema. \"negativo\": no lo muestra bien (la esencia es una escena, un proceso, un aparato, una construcción geométrica o algo que no es una función).",
         },
-        mejor_herramienta_posible: {
-          type: "string",
-          description: "La mejor herramienta imaginable para enseñar esa lección, sin limitarte a lo que existe hoy: qué mostraría y cómo se usaría, en concreto.",
-        },
-        que_alcanza_a_mostrar_un_graficador: {
-          type: "string",
-          description: "Qué parte de la lección llegaría a mostrar un graficador de funciones (curvas y superficies sobre ejes x/y sin rótulos ni unidades).",
-        },
-        lo_que_se_pierde: {
-          type: "string",
-          description: "Qué parte ESENCIAL de la lección el graficador NO muestra o muestra de forma confusa. Si ninguna, decilo y explicá por qué.",
-        },
-        mejora: {
-          type: "string",
-          enum: ["ninguna", "marginal", "sustancial", "enorme"],
-          description: "Cuánto más enseñaría la herramienta ideal que el graficador, en lo ESENCIAL (no cuenta el pulido visual ni lo que el graficador ya hace): ninguna | marginal | sustancial | enorme.",
-        },
-        razon: { type: "string", description: "Justificación de la mejora en 1-3 frases, para el registro (no la ve el alumno)." },
       },
     },
   };
 }
 
 /**
- * Prompt del JUEZ de "visual" (consulta ciega, ver armarToolJuezVisual). Recibe SOLO materia y tema; describe
- * qué es y qué hace hoy el graficador para que pueda comparar, pero no incluye la propuesta del creador, su
- * razonamiento ni el criterio de graficar/reservar. Los dos ejemplos de calibración son de signo contrario y
- * ninguno es el caso que originó este flujo (Hidrostática).
+ * Prompt del JUEZ de "visual" (consulta ciega, ver armarToolJuezVisual). Recibe SOLO materia y tema.
  */
 export function armarPromptJuezVisual(materia, tema, idioma = "es") {
   return {
     system: `Sos un diseñador de herramientas educativas con mucha experiencia. Te consultan por un tema (materia:
 "${materia}", tema: "${tema}").
 
-Hoy esta biblioteca enseña los temas con un GRAFICADOR DE FUNCIONES. Esto es TODO lo que hace: dibuja curvas y
+Esta biblioteca enseña los temas con un GRAFICADOR DE FUNCIONES. Esto es TODO lo que hace: dibuja curvas y
 superficies a partir de fórmulas, sobre ejes x/y (o x/y/z) sin título, sin rótulos y sin unidades; el alumno ve solo
 las gráficas y la lista de fórmulas, nada más. No dibuja escenas, aparatos, objetos físicos, diagramas ni procesos.
 Lo que ya sabe hacer, además de graficar fórmulas:
 ${CAPACIDADES_VISUAL_JS_COMPLETAS}
 
-Tu pregunta: ¿se puede crear una herramienta MEJOR que ese graficador para enseñar ESTE tema?
-1. Pensá primero qué es lo esencial que un alumno debería entender ("leccion_esencial").
-2. Imaginá la mejor herramienta posible para enseñarlo, sin limitarte a lo que existe hoy
-   ("mejor_herramienta_posible"): qué mostraría y cómo se usaría, en concreto.
-3. Pensá qué parte de esa lección llegaría a mostrar el graficador de funciones
-   ("que_alcanza_a_mostrar_un_graficador") y qué parte NO ("lo_que_se_pierde").
-4. Dá la "mejora": cuánto más enseñaría la herramienta ideal que el graficador, en lo ESENCIAL del tema.
-   - "ninguna": el graficador ya muestra lo esencial; una herramienta nueva no enseñaría más.
-   - "marginal": enseñaría un poco más (más prolijo, más cómodo, algún extra), pero la lección se entiende igual con
-     el graficador.
-   - "sustancial": hay una parte esencial de la lección que el graficador no puede mostrar, o solo muestra de forma
-     confusa.
-   - "enorme": el graficador casi no sirve para este tema; la lección está en otra cosa (una escena, un proceso, un
-     aparato, objetos reales) y solo podría dibujar curvas genéricas.
-   No cuenta como mejora: mejor diseño, colores, más animación decorativa, ni nada que el graficador ya hace
-   (parámetros animables con deslizador, los comandos de arriba).
-Sé honesto en los dos sentidos: no inventes mejoras para temas que el graficador ya enseña bien (por ejemplo, una
-derivada y su recta tangente), ni te conformes con el graficador en temas cuya esencia no es una función (por
-ejemplo, las fases de la mitosis).
+Tu pregunta: ¿el graficador muestra bien lo ESENCIAL de este tema?
+- "positivo": sí. La esencia del tema es una función o relación matemática cuya forma es la lección (por ejemplo,
+  una derivada y su recta tangente, una distribución de probabilidad, una cónica).
+- "negativo": no. La esencia está en otra cosa (una escena, un proceso, un aparato, objetos reales, una construcción
+  que el graficador no puede emitir) y solo podría dibujar curvas genéricas sin significado para el alumno.
+No cuenta el pulido visual, los colores ni la animación decorativa. Sé honesto en los dos sentidos: no digas "negativo"
+para temas que el graficador ya enseña bien, ni "positivo" para temas cuya esencia no es una función (por ejemplo,
+las fases de la mitosis).
 ${bloqueIdioma(idioma)}
-Respondé llamando a la herramienta, completando los campos en orden.`,
+Respondé llamando a la herramienta con el veredicto, sin ninguna explicación.`,
     prompt: `Materia: ${materia}\nTema: ${tema}`,
   };
 }
@@ -512,8 +427,8 @@ No agregues texto fuera del JSON.`,
 graficador interactivo (materia: "${materia}", tema: "${tema}"). Son solo los valores DEFAULT: el usuario
 después las puede editar, sumar o quitar, y elige si las ve como gráfico 2D o como superficie 3D con los
 mismos botones, así que no hace falta que decidas eso.
-Respondé llamando a la herramienta: PRIMERO el campo "analisis" y DESPUÉS {"formulas": [{"formula": "string"}, ...]}
-(o "necesitaHerramienta" en lugar de "formulas" si el tema no se enseña bien con este graficador).
+Respondé llamando a la herramienta: PRIMERO "veredicto" y DESPUÉS {"formulas": [{"formula": "string"}, ...]}
+(con "veredicto": "reservar" no mandes "formulas" si el tema no se enseña bien con este graficador).
 
 ${CRITERIO_REPRESENTACION_VISUAL}
 
@@ -574,19 +489,11 @@ ${bloqueIdioma(idioma)}
 Ejemplos válidos: "sin(x)*cos(y)", "x^2-y^2", "exp(-x^2-y^2)", "x^2+y^2=25".
 Ejemplo de tema comparativo (una función y su derivada): {"formulas": [{"formula": "x^2"}, {"formula": "2*x"}]}.
 
-SI NINGUNA FÓRMULA REPRESENTA BIEN EL TEMA: antes de forzar algo que no queda bien, tené en cuenta que
-visual.js (el frontend) ya soporta bastante más que estas fórmulas -- este catálogo completo:
-${CAPACIDADES_VISUAL_JS_COMPLETAS}
-Importante: VOS solo podés emitir "formulas" en los 4 formatos de arriba (explícita, implícita, paramétrica y
-euler(...)) -- no podés emitir ninguno de estos otros comandos (Circle, tangent, area, riemann, taylor, field,
-matrix, Surface, etc.), aunque el frontend ya los tenga. Si el tema se resolvería con uno de ESOS comandos, o si ni con todo este catálogo alcanza (haría
-falta una función nueva en visual.js o una herramienta externa aparte), NO inventes una fórmula forzada que
-no muestre bien el tema: llamá a la herramienta con "necesitaHerramienta" en vez de "formulas", explicando
-qué se quería graficar, por qué no alcanza lo disponible, y qué haría falta. Usalo cuando la PRUEBA DEL
-ALUMNO falle (ver arriba): un gráfico genérico que solo vos sabés interpretar es peor que reservar el tema.
-No lo uses para evitar pensar la fórmula cuando el tema SÍ se grafica bien: los temas donde la función o la
-relación matemática ES la lección (funciones, cálculo, trigonometría, cónicas, números complejos,
-distribuciones) se resuelven con una fórmula normal.
+SI NINGUNA FÓRMULA REPRESENTA BIEN EL TEMA: no inventes una fórmula forzada que no muestre bien el tema.
+Respondé "veredicto": "reservar" y NO mandes "formulas". Usalo cuando la PRUEBA DEL ALUMNO falle (ver arriba): un
+gráfico genérico que solo vos sabés interpretar es peor que reservar el tema. No lo uses para evitar pensar la
+fórmula cuando el tema SÍ se grafica bien: los temas donde la función o la relación matemática ES la lección
+(funciones, cálculo, trigonometría, cónicas, números complejos, distribuciones) se resuelven con una fórmula normal.
 No agregues texto fuera de la llamada a la herramienta.`,
       prompt: `Materia: ${materia}\nTema: ${tema}`,
     };
