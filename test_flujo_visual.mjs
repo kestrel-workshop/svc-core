@@ -49,21 +49,10 @@ globalThis.fetch = async (url, init = {}) => {
 const { generarYGuardarJSON } = await import("./lib/generar.js");
 
 // ---------- datos de los escenarios ----------
-const analisis = (veredicto) => ({
-  concepto_central: "Concepto central del tema de prueba, en una frase.",
-  relacion_candidata: "Relación candidata de prueba con el significado de los ejes.",
-  prueba_del_alumno: "Qué entendería el alumno viendo solo la gráfica, de prueba.",
-  veredicto,
-});
-const necesita = { tema: "Escena de un recipiente con fluido y sondas de presión", motivo: "Una recta genérica no enseña presión ni profundidad.", herramienta_sugerida: "Escena interactiva de un recipiente con un fluido." };
-// Dictamen del juez ciego (mejora: ninguna | marginal | sustancial | enorme)
+const analisis = (veredicto) => ({ veredicto });
+const necesita = null;
 const dictamen = (mejora, extra = {}) => ({
-  leccion_esencial: "La presión de un fluido en reposo crece con la profundidad.",
-  mejor_herramienta_posible: "Un recipiente con fluido y sondas de presión que el alumno mueve a distintas profundidades.",
-  que_alcanza_a_mostrar_un_graficador: "Solo una recta genérica a la que el alumno no puede dar significado.",
-  lo_que_se_pierde: "El fluido, la profundidad y la presión: lo esencial no se ve en curvas sin rótulos.",
-  mejora,
-  razon: "La lección está en una escena física, no en una función.",
+  veredicto: mejora === "sustancial" || mejora === "enorme" ? "negativo" : "positivo",
   ...extra,
 });
 const revision = (n, resultado = "correcta") => Array.from({ length: n }, () => ({ relacion_prevista: "Relación prevista de la fórmula de prueba.", comprobacion: "En x=1 da el valor esperado, comprobado a mano.", resultado }));
@@ -91,8 +80,8 @@ if (!juezApagado) {
 
   // A3) Mejora "marginal": el graficador alcanza -> sigue el creador.
   guion = {
-    dictaminar_visual: dictamen("marginal", { lo_que_se_pierde: "Nada esencial: solo comodidad extra de uso del graficador." }),
-    guardar_formulas_visual: { analisis: analisis("grafica_bien"), formulas: [{ formula: "sin(x)" }] },
+    dictaminar_visual: dictamen("marginal"),
+    guardar_formulas_visual: { veredicto: "grafica_bien", formulas: [{ formula: "sin(x)" }] },
     guardar_formulas_visual_corregidas: { revision_matematica: revision(1), formulas: [{ formula: "sin(x)" }] },
   };
   r = await correr("Matemática", "Funciones trigonométricas: seno y coseno");
@@ -100,8 +89,8 @@ if (!juezApagado) {
 
   // B) Tema que sí se grafica: el juez no ve mejora, crea el creador y corrige el revisor matemático.
   guion = {
-    dictaminar_visual: dictamen("ninguna", { lo_que_se_pierde: "Nada esencial: el graficador ya muestra la función y su derivada." }),
-    guardar_formulas_visual: { analisis: analisis("grafica_bien"), formulas: [{ formula: "x^2" }, { formula: "2*x" }] },
+    dictaminar_visual: dictamen("ninguna"),
+    guardar_formulas_visual: { veredicto: "grafica_bien", formulas: [{ formula: "x^2" }, { formula: "2*x" }] },
     guardar_formulas_visual_corregidas: { revision_matematica: revision(2), formulas: [{ formula: "x^2" }, { formula: "2*x" }] },
   };
   r = await correr("Matemática", "Derivadas: recta tangente y función derivada");
@@ -113,12 +102,12 @@ if (!juezApagado) {
 
   // B2) El revisor matemático corrige una fórmula: se guarda la corregida.
   guion.guardar_formulas_visual_corregidas = { revision_matematica: revision(1, "corregida"), formulas: [{ formula: "exp(-x^2/2)/sqrt(2*pi)" }] };
-  guion.guardar_formulas_visual = { analisis: analisis("grafica_bien"), formulas: [{ formula: "exp(-x^2/2)" }] };
+  guion.guardar_formulas_visual = { veredicto: "grafica_bien", formulas: [{ formula: "exp(-x^2/2)" }] };
   r = await correr("Estadística", "Distribución normal");
   check("B2) el revisor matemático corrige y se guarda su versión", leer("visual")?.formulas?.[0]?.formula === "exp(-x^2/2)/sqrt(2*pi)", JSON.stringify(leer("visual")));
 
   // C) El creador reserva por su cuenta (el juez no vio mejora): queda registrado como decidido por el creador.
-  guion = { dictaminar_visual: dictamen("ninguna"), guardar_formulas_visual: { analisis: analisis("reservar"), necesitaHerramienta: necesita } };
+  guion = { dictaminar_visual: dictamen("ninguna"), guardar_formulas_visual: { veredicto: "reservar" } };
   r = await correr("Biología", "Tema que el creador reserva");
   check("C) reserva del creador: no pasa por el revisor", r.ok && r.resultados[0].sinCobertura === true && modelos() === "juez:claude-opus-5-5 -> creador:claude-fable-5-1", modelos());
   check("C) no se escribe visual_later cuando reserva el creador", leer("visual_later") === null);
@@ -126,7 +115,7 @@ if (!juezApagado) {
   // D) El juez no responde (error de la API): se sigue con el creador (fail-open) y se revisa la matemática.
   guion = {
     dictaminar_visual: "ERROR",
-    guardar_formulas_visual: { analisis: analisis("grafica_bien"), formulas: [{ formula: "sin(x)" }] },
+    guardar_formulas_visual: { veredicto: "grafica_bien", formulas: [{ formula: "sin(x)" }] },
     guardar_formulas_visual_corregidas: { revision_matematica: revision(1), formulas: [{ formula: "sin(x)" }] },
   };
   r = await correr("Matemática", "Funciones trigonométricas");
@@ -134,31 +123,31 @@ if (!juezApagado) {
 
   // D2) El juez devuelve algo que no valida (razonamiento de relleno): 2 intentos y se sigue con el creador.
   guion = {
-    dictaminar_visual: dictamen("enorme", { lo_que_se_pierde: "x" }),
-    guardar_formulas_visual: { analisis: analisis("grafica_bien"), formulas: [{ formula: "sin(x)" }] },
+    dictaminar_visual: { veredicto: "quizas" },
+    guardar_formulas_visual: { veredicto: "grafica_bien", formulas: [{ formula: "sin(x)" }] },
     guardar_formulas_visual_corregidas: { revision_matematica: revision(1), formulas: [{ formula: "sin(x)" }] },
   };
   r = await correr("Matemática", "Tema con juez de relleno");
-  check("D2) dictamen de relleno: se descarta (2 intentos) y el flujo sigue sin reservar por error", r.ok && llamadas.filter(l => l.tool === "dictaminar_visual").length === 2 && !!leer("visual")?.formulas, modelos());
+  check("D2) veredicto inválido del juez: se descarta (2 intentos) y el flujo sigue sin reservar por error", r.ok && llamadas.filter(l => l.tool === "dictaminar_visual").length === 2 && !!leer("visual")?.formulas, modelos());
 
   // E) El revisor matemático no completa la revisión: esa corrección se descarta y queda el borrador.
   guion = {
     dictaminar_visual: dictamen("ninguna"),
-    guardar_formulas_visual: { analisis: analisis("grafica_bien"), formulas: [{ formula: "x^2" }] },
+    guardar_formulas_visual: { veredicto: "grafica_bien", formulas: [{ formula: "x^2" }] },
     guardar_formulas_visual_corregidas: { formulas: [{ formula: "x^3" }] },   // sin revision_matematica
   };
   r = await correr("Matemática", "Parábolas");
   check("E) sin 'revision_matematica' la corrección NO se acepta: queda el borrador (x^2), no x^3", r.ok && leer("visual")?.formulas?.[0]?.formula === "x^2", JSON.stringify(leer("visual")));
 
   // G) Incoherencia del creador: dice "reservar" pero manda fórmulas -> reintenta (hasta 3) y falla limpio.
-  guion = { dictaminar_visual: dictamen("ninguna"), guardar_formulas_visual: { analisis: analisis("reservar"), formulas: [{ formula: "x^2" }] } };
+  guion = { dictaminar_visual: dictamen("ninguna"), guardar_formulas_visual: { veredicto: "reservar", formulas: [{ formula: "x^2" }] } };
   r = await correr("Física", "Tema incoherente");
   check("G) borrador incoherente (reservar + fórmulas): 3 intentos del creador y error claro, sin guardar nada", !r.ok && llamadas.filter(l => l.tool === "guardar_formulas_visual").length === 3 && leer("visual") === null, modelos());
 } else {
   // F) Con JUEZ_VISUAL=off el flujo vuelve al de antes: creador -> revisor matemático, sin juez.
   guion = {
     dictaminar_visual: dictamen("enorme"),
-    guardar_formulas_visual: { analisis: analisis("grafica_bien"), formulas: [{ formula: "a*x" }, { formula: "2*x" }] },
+    guardar_formulas_visual: { veredicto: "grafica_bien", formulas: [{ formula: "a*x" }, { formula: "2*x" }] },
     guardar_formulas_visual_corregidas: { revision_matematica: revision(2), formulas: [{ formula: "a*x" }, { formula: "2*x" }] },
   };
   const r = await correr("Física", "Hidrostática");
