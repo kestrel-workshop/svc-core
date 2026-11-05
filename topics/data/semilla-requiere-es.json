@@ -1,0 +1,284 @@
+{
+  "acidos-y-bases": [
+    "equilibrio-quimico",
+    "logaritmos-y-exponenciales",
+    "soluciones-y-concentracion"
+  ],
+  "aplicaciones-de-la-integral": [
+    "integrales-definidas-e-indefinidas",
+    "tecnicas-de-integracion"
+  ],
+  "autovalores-y-autovectores": [
+    "determinantes",
+    "transformaciones-lineales"
+  ],
+  "caida-libre-y-tiro-parabolico": [
+    "movimiento-rectilineo-uniformemente-acelerado",
+    "movimiento-rectilineo-uniformemente-variado-(mruv)",
+    "vectores-y-operaciones"
+  ],
+  "calor-y-primera-ley-de-la-termodinamica": [
+    "conservacion-de-la-energia",
+    "trabajo-y-energia"
+  ],
+  "campo-magnetico": [
+    "ley-de-coulomb-y-campo-electrico"
+  ],
+  "cantidad-de-movimiento-y-choques": [
+    "conservacion-de-la-energia",
+    "leyes-de-newton"
+  ],
+  "cinetica-quimica": [
+    "derivadas",
+    "ecuaciones-diferenciales-de-primer-orden",
+    "termoquimica"
+  ],
+  "composicion-de-funciones": [
+    "dominio,-rango-y-graficas-de-funciones"
+  ],
+  "conicas": [
+    "la-recta-en-geometria-analitica"
+  ],
+  "conjuntos-y-funciones": [
+    "logica-proposicional"
+  ],
+  "conservacion-de-la-energia": [
+    "trabajo-y-energia"
+  ],
+  "contraste-de-hipotesis": [
+    "intervalos-de-confianza"
+  ],
+  "cotas,-supremo-e-infimo": [
+    "numeros-reales-e-intervalos"
+  ],
+  "derivadas": [
+    "limites-y-continuidad"
+  ],
+  "derivadas-parciales": [
+    "derivadas"
+  ],
+  "determinantes": [
+    "matrices-y-operaciones"
+  ],
+  "diagonalizacion-de-matrices": [
+    "autovalores-y-autovectores"
+  ],
+  "distribucion-binomial": [
+    "probabilidad-basica-y-probabilidad-condicional"
+  ],
+  "distribucion-de-poisson": [
+    "distribucion-binomial"
+  ],
+  "distribucion-normal": [
+    "distribucion-binomial",
+    "integrales-definidas-e-indefinidas",
+    "media,-mediana-y-moda"
+  ],
+  "divisibilidad-y-congruencias": [
+    "induccion-matematica",
+    "relaciones-de-equivalencia-y-de-orden"
+  ],
+  "dominio,-rango-y-graficas-de-funciones": [
+    "numeros-reales-e-intervalos"
+  ],
+  "ecuaciones-diferenciales-de-primer-orden": [
+    "derivadas",
+    "tecnicas-de-integracion"
+  ],
+  "ecuaciones-e-inecuaciones": [
+    "numeros-reales-e-intervalos",
+    "valor-absoluto"
+  ],
+  "enlace-quimico": [
+    "estructura-atomica-y-tabla-periodica"
+  ],
+  "equilibrio-quimico": [
+    "cinetica-quimica"
+  ],
+  "estatica-y-equilibrio": [
+    "leyes-de-newton"
+  ],
+  "estequiometria": [
+    "estructura-atomica-y-tabla-periodica"
+  ],
+  "funcion-inversa": [
+    "composicion-de-funciones",
+    "inyectividad,-sobreyectividad-y-paridad"
+  ],
+  "funciones-elementales": [
+    "dominio,-rango-y-graficas-de-funciones",
+    "funciones-trigonometricas-y-ecuaciones-trigonometricas"
+  ],
+  "funciones-por-partes-y-transformaciones-de-graficas": [
+    "dominio,-rango-y-graficas-de-funciones"
+  ],
+  "funciones-trigonometricas-y-ecuaciones-trigonometricas": [
+    "razones-trigonometricas-e-identidades"
+  ],
+  "grafos-basicos": [
+    "conjuntos-y-funciones"
+  ],
+  "independencia-lineal,-bases-y-dimension": [
+    "sistemas-de-ecuaciones-lineales",
+    "subespacios-vectoriales"
+  ],
+  "induccion-matematica": [
+    "logica-proposicional"
+  ],
+  "integrales-definidas-e-indefinidas": [
+    "derivadas",
+    "limites-y-continuidad"
+  ],
+  "integrales-dobles": [
+    "derivadas-parciales",
+    "integrales-definidas-e-indefinidas"
+  ],
+  "intervalos-de-confianza": [
+    "distribucion-normal",
+    "muestreo-y-distribucion-muestral"
+  ],
+  "inyectividad,-sobreyectividad-y-paridad": [
+    "dominio,-rango-y-graficas-de-funciones"
+  ],
+  "la-recta-en-geometria-analitica": [
+    "teorema-de-pitagoras-y-semejanza-de-triangulos",
+    "vectores-y-operaciones"
+  ],
+  "ley-de-coulomb-y-campo-electrico": [
+    "leyes-de-newton",
+    "vectores-y-operaciones"
+  ],
+  "ley-de-gravitacion-universal": [
+    "leyes-de-newton",
+    "movimiento-circular"
+  ],
+  "ley-de-ohm-y-resistencias": [
+    "ley-de-coulomb-y-campo-electrico"
+  ],
+  "leyes-de-newton": [
+    "caida-libre-y-tiro-parabolico"
+  ],
+  "limites-y-continuidad": [
+    "dominio,-rango-y-graficas-de-funciones",
+    "funciones-elementales"
+  ],
+  "logaritmos-y-exponenciales": [
+    "funcion-inversa",
+    "funciones-elementales"
+  ],
+  "matrices-y-operaciones": [
+    "vectores-y-operaciones"
+  ],
+  "maximos,-minimos-y-optimizacion": [
+    "derivadas",
+    "regla-de-la-cadena-y-derivacion-implicita"
+  ],
+  "medidas-de-dispersion": [
+    "media,-mediana-y-moda"
+  ],
+  "movimiento-circular": [
+    "funciones-trigonometricas-y-ecuaciones-trigonometricas",
+    "movimiento-rectilineo-uniformemente-acelerado"
+  ],
+  "movimiento-rectilineo-uniformemente-acelerado": [
+    "derivadas"
+  ],
+  "movimiento-rectilineo-uniformemente-variado-(mruv)": [
+    "movimiento-rectilineo-uniformemente-acelerado"
+  ],
+  "muestreo-y-distribucion-muestral": [
+    "distribucion-normal",
+    "medidas-de-dispersion"
+  ],
+  "numeros-complejos": [
+    "polinomios-y-factorizacion"
+  ],
+  "ondas-y-sonido": [
+    "movimiento-circular"
+  ],
+  "permutaciones-y-combinaciones": [
+    "conjuntos-y-funciones"
+  ],
+  "polinomios-y-factorizacion": [
+    "ecuaciones-e-inecuaciones"
+  ],
+  "principio-de-arquimedes": [
+    "estatica-y-equilibrio",
+    "leyes-de-newton"
+  ],
+  "probabilidad-basica-y-probabilidad-condicional": [
+    "permutaciones-y-combinaciones"
+  ],
+  "producto-interno-y-ortogonalidad": [
+    "independencia-lineal,-bases-y-dimension",
+    "vectores-y-operaciones"
+  ],
+  "prueba-chi-cuadrado": [
+    "contraste-de-hipotesis"
+  ],
+  "razones-trigonometricas-e-identidades": [
+    "teorema-de-pitagoras-y-semejanza-de-triangulos"
+  ],
+  "regiones-en-el-plano": [
+    "dominio,-rango-y-graficas-de-funciones"
+  ],
+  "regla-de-la-cadena-y-derivacion-implicita": [
+    "composicion-de-funciones",
+    "derivadas"
+  ],
+  "regresion-lineal-y-correlacion": [
+    "medidas-de-dispersion"
+  ],
+  "relaciones-de-equivalencia-y-de-orden": [
+    "conjuntos-y-funciones"
+  ],
+  "rozamiento": [
+    "leyes-de-newton"
+  ],
+  "series-de-potencias-y-series-de-taylor": [
+    "derivadas",
+    "series-numericas-y-criterios-de-convergencia"
+  ],
+  "series-numericas-y-criterios-de-convergencia": [
+    "limites-y-continuidad"
+  ],
+  "sistemas-de-ecuaciones-lineales": [
+    "determinantes",
+    "ecuaciones-e-inecuaciones",
+    "matrices-y-operaciones"
+  ],
+  "soluciones-y-concentracion": [
+    "estequiometria"
+  ],
+  "subespacios-vectoriales": [
+    "vectores-y-operaciones"
+  ],
+  "tecnicas-de-integracion": [
+    "integrales-definidas-e-indefinidas"
+  ],
+  "teorema-de-bayes": [
+    "probabilidad-basica-y-probabilidad-condicional"
+  ],
+  "teorema-de-pitagoras-y-semejanza-de-triangulos": [
+    "geometria-euclidiana"
+  ],
+  "termoquimica": [
+    "calor-y-primera-ley-de-la-termodinamica",
+    "estequiometria"
+  ],
+  "trabajo-y-energia": [
+    "integrales-definidas-e-indefinidas",
+    "leyes-de-newton"
+  ],
+  "transformaciones-lineales": [
+    "independencia-lineal,-bases-y-dimension",
+    "matrices-y-operaciones"
+  ],
+  "triangulo-de-pascal": [
+    "induccion-matematica",
+    "permutaciones-y-combinaciones"
+  ],
+  "valor-absoluto": [
+    "numeros-reales-e-intervalos"
+  ]
+}

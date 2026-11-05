@@ -1,0 +1,29 @@
+{
+  "retiradas": ["calculo", "calculus", "algebra_lineal", "linear_algebra", "fisica", "physics", "estadistica", "statistics", "geometria", "geometry", "algebra_funciones", "algebra_functions", "matematica_discreta", "discrete_math", "quimica_general", "general_chemistry", "mathematical_logic"],
+  "equivalencias": {
+    "calculo_diferencial": "differential_calculus", "calculo_integral": "integral_calculus", "series": "series", "varias_variables": "multivariable_calculus",
+    "ecuaciones_diferenciales": "differential_equations", "algebra_elemental": "elementary_algebra", "funciones": "functions", "matrices_y_sistemas": "matrices_and_systems",
+    "espacios_vectoriales": "vector_spaces", "autovalores_y_diagonalizacion": "eigenvalues_and_diagonalization", "geometria_euclidiana": "euclidean_geometry",
+    "trigonometria": "trigonometry", "geometria_analitica": "analytic_geometry", "logica": "logic", "conjuntos_y_relaciones": "sets_and_relations",
+    "combinatoria": "combinatorics", "teoria_de_numeros": "number_theory", "teoria_de_grafos": "graph_theory", "estadistica_descriptiva": "descriptive_statistics",
+    "probabilidad": "probability", "estadistica_inferencial": "inferential_statistics", "cinematica": "kinematics", "dinamica": "dynamics", "estatica": "statics",
+    "trabajo_y_energia": "work_and_energy", "fluidos": "fluids", "termodinamica": "thermodynamics", "ondas": "waves", "electromagnetismo": "electromagnetism",
+    "estructura_de_la_materia": "structure_of_matter", "estequiometria": "stoichiometry", "termoquimica": "thermochemistry", "cinetica_quimica": "chemical_kinetics",
+    "equilibrio_quimico": "chemical_equilibrium"
+  },
+  "fronterizos": [
+    "Vectores y operaciones: matrices y sistemas (álgebra) 50 %, geometría analítica 30 %, física 20 %. Va en matrices y sistemas.",
+    "Producto interno y ortogonalidad: espacios vectoriales 80 %, geometría analítica 20 %.",
+    "Sistemas de ecuaciones lineales: matrices y sistemas 70 %, álgebra elemental 30 %.",
+    "Números complejos, polinomios, ecuaciones e inecuaciones: álgebra elemental.",
+    "Logaritmos y exponenciales, dominio y gráficas de funciones: funciones (no cálculo).",
+    "Binomio de Newton y triángulo de Pascal: combinatoria 80 %, álgebra elemental 20 %.",
+    "Distribución binomial, de Poisson y normal: probabilidad. Muestreo, intervalos de confianza, contrastes y chi-cuadrado: estadística inferencial.",
+    "Regresión y correlación: estadística descriptiva 50 %, inferencial 50 %.",
+    "Inducción matemática: lógica 70 %. Divisibilidad y congruencias: teoría de números. Grafos y árboles: teoría de grafos (no combinatoria).",
+    "Conjuntos, funciones como relación, relaciones de equivalencia y de orden: conjuntos y relaciones.",
+    "Movimiento circular: cinemática 60 %, dinámica 40 %. Gravitación: dinámica 80 %. Trabajo y energía: energía 70 %, dinámica 30 %.",
+    "Calor y primera ley: termodinámica 85 %, química 15 %. Termoquímica: termoquímica 60 %, termodinámica (física) 40 %.",
+    "Soluciones y concentración: estequiometría 70 %, equilibrio 30 %. Ácidos y bases: equilibrio químico 80 %."
+  ]
+}
